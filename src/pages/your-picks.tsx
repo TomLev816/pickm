@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import WeekSelecter from '../components/weekselecter';
 import { useState } from 'react';
 
-const PastPicks: NextPage = () => {
+const YourPicks: NextPage = () => {
 
   const [week, setWeek] = useState(4); 
   const onWeekChange = (weekNum: number) => {
@@ -19,11 +19,11 @@ const PastPicks: NextPage = () => {
           onWeekChange={onWeekChange}
         /> 
         <div className=" pb-2 text-4xl font-bold bold-text">
-          Week {week} Picks
+          Your Picks for Week {week} 
         </div>
       </div>
     </Wrapper>
   )
 }
 
-export default PastPicks
+export default YourPicks
