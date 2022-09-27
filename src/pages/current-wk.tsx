@@ -10,13 +10,13 @@ const CurrentWk: FC<{
 }> = ({}) => {
 
   return (
-    <Wrapper title='Pickm - Current Week'>
+    <Wrapper >
       <div className="flex flex-col items-center justify-center">
         <h3 className="self-start pb-2 text-4xl font-bold bold-text">
           Current Week
         </h3>
       </div>
-    </Wrapper>
+    </Wrapper >
   )
 }
 
