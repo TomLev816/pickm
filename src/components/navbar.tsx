@@ -27,18 +27,11 @@ const NavBar: React.FC = () => {
                 Home <FaCopy size={24} />
               </button>
             </Link>
-            <Link href='/current-wk'>
+            <Link href='/your-picks'>
               <button
                 className="flex gap-2 rounded bg-gray-200 p-4 font-bold text-gray-800 hover:bg-gray-100"
               >
-                Current Week <FaCopy size={24} />
-              </button>
-            </Link>
-            <Link href='/past-picks'>
-              <button
-                className="flex gap-2 rounded bg-gray-200 p-4 font-bold text-gray-800 hover:bg-gray-100"
-              >
-                Past Weeks <FaCopy size={24} />
+                Your Picks <FaCopy size={24} />
               </button>
             </Link>
             <Link href='/all-picks'>
