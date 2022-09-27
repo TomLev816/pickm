@@ -1,12 +1,7 @@
 import type { GetServerSidePropsContext, NextPage } from "next";
-import { signIn, signOut, useSession } from 'next-auth/react';
-import Head from "next/head";
 import Wrapper from "../components/wrapper";
 import { getServerAuthSession } from '../server/common/get-server-auth-session';
 import { trpc } from "../utils/trpc";
-
-import { FaCopy, FaGoogle, FaSignOutAlt } from 'react-icons/fa';
-import Link from 'next/link';
 
 const Home: NextPage = () => {
   const hello = trpc.useQuery(["hello.helloTom", { text: "from tRPC" }]);

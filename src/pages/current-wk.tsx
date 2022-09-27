@@ -1,13 +1,7 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from './layout.module.css';
-import utilStyles from '../styles/utils.module.css';
-import Link from 'next/link';
-import { FC, ReactNode } from 'react';
 import Wrapper from '../components/wrapper';
+import { NextPage } from 'next';
 
-const CurrentWk: FC<{
-}> = ({}) => {
+const CurrentWk: NextPage = () => {
 
   return (
     <Wrapper >

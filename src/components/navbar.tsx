@@ -2,7 +2,6 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { FaCopy, FaGoogle, FaSignOutAlt } from 'react-icons/fa';
 
-
 const NavBar: React.FC = () => {
   const {data: sesh} = useSession();
 

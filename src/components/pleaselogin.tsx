@@ -2,7 +2,7 @@ import { signIn } from 'next-auth/react'
 import { FaGoogle } from 'react-icons/fa'
 
 
-const PleaseLogin = () => {
+const PleaseLogin: React.FC = () => {
   return (
     <div className="flex grow flex-col items-center justify-center">
       <div className="text-2xl font-bold">Please log in below</div>
