@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import NavBar from './navbar';
 import PleaseLogin from './pleaselogin';
 
-const WrapperHeader: React.FC = () => {
+const WrapperHeader: FC = () => {
   return (
     <Head>
       <title>PickM</title>
