@@ -34,6 +34,7 @@ const WeekSelecter: React.FC<{activeWeek: number, onWeekChange: (weekNum: number
               weekNum={wkNum + 1}
               activeWeek={activeWeek} 
               onWeekChange={onWeekChange}
+              key={wkNum}
             />
           )}
         </ul>
