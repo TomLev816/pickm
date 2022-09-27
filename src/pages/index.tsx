@@ -9,7 +9,7 @@ import { FaCopy, FaGoogle, FaSignOutAlt } from 'react-icons/fa';
 import Link from 'next/link';
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
+  const hello = trpc.useQuery(["hello.helloTom", { text: "from tRPC" }]);
   
   return (
     <Wrapper>

@@ -1,8 +1,8 @@
 import { createRouter } from "./context";
 import { z } from "zod";
 
-export const exampleRouter = createRouter()
-  .query("hello", {
+export const helloRouter = createRouter()
+  .query("helloTom", {
     input: z
       .object({
         text: z.string().nullish(),
