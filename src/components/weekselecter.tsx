@@ -13,6 +13,7 @@ const WeekSelecterCard: React.FC<{
         className={active ? "relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md" : "relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 text-gray-800 hover:text-gray-800 hover:bg-gray-400 hover:bg-opacity-40"}
         name={weekName}
         onClick={() => onWeekChange(weekNum)}
+        key={weekNum}
         >
         {weekName}
       </button>
