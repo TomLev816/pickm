@@ -9,34 +9,34 @@ const WrapperHeader: FC = () => {
     <Head>
       <title>PickM</title>
       <meta name="robots" content="follow, index" />
-      <meta property="og:url"/>
+      <meta property="og:url" />
     </Head>
   )
 }
 
-const Wrapper: FC<{ children : ReactNode }> = ({ children }) => {
-  const { data : sesh } = useSession()
+const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
+  const { data: sesh } = useSession()
 
   if (!sesh)
     return (
       <>
         <WrapperHeader />
-        <div className="relative flex h-screen w-screen bg-red-400 flex-col justify-between">
+        <div className="relative flex min-h-screen  bg-red-400 flex-col justify-between">
           <div className="flex min-h-0 flex-1 flex-col">
             <NavBar />
             <PleaseLogin />
           </div>
         </div>
       </>
-  )
-  
+    )
+
   return (
-    <> 
+    <>
       <WrapperHeader />
-      <div className="relative flex h-screen w-screen bg-red-400 flex-col justify-between">
+      <div className="relative flex min-h-screen bg-red-400 flex-col justify-between">
         <div className="flex min-h-0 flex-1 flex-col">
           <NavBar />
-          { children }
+          {children}
         </div>
       </div>
     </>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { FaCopy, FaGoogle, FaSignOutAlt } from 'react-icons/fa';
 
 const NavBar: React.FC = () => {
-  const {data: sesh} = useSession();
+  const { data: sesh } = useSession();
 
   if (sesh)
     return (

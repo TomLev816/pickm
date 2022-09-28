@@ -1,12 +1,14 @@
+import { useEffect } from 'react';
 
 const WeekSelecterCard: React.FC<{
   weekName: string,
   weekNum: number,
   activeWeek: number,
-  onWeekChange: (weekNum: number) => void 
-}> = ({weekName, weekNum, activeWeek, onWeekChange}) => {
+  onWeekChange: (weekNum: number) => void
+}> = ({ weekName, weekNum, activeWeek, onWeekChange }) => {
   const active = weekNum === activeWeek
-    
+
+
   return (
     <li className="page-item">
       <button
@@ -14,25 +16,25 @@ const WeekSelecterCard: React.FC<{
         name={weekName}
         onClick={() => onWeekChange(weekNum)}
         key={weekNum}
-        >
+      >
         {weekName}
       </button>
     </li>
   )
 }
 
-const WeekSelecter: React.FC<{activeWeek: number, onWeekChange: (weekNum: number) => void}> = ({activeWeek, onWeekChange}) => {
+const WeekSelecter: React.FC<{ activeWeek: number, onWeekChange: (weekNum: number) => void }> = ({ activeWeek, onWeekChange }) => {
   console.log(activeWeek);
-  
+
   return (
     <div className="flex justify-center">
       <nav aria-label="Page navigation example">
         <ul className="flex list-style-none">
-          {Array.from(Array(18).keys()).map(wkNum => 
-            <WeekSelecterCard 
+          {Array.from(Array(18).keys()).map(wkNum =>
+            <WeekSelecterCard
               weekName={`Week ${wkNum + 1}`}
               weekNum={wkNum + 1}
-              activeWeek={activeWeek} 
+              activeWeek={activeWeek}
               onWeekChange={onWeekChange}
               key={wkNum}
             />
