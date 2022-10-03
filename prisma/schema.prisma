@@ -12,6 +12,55 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
+model Vote {
+    id Int @id @default(autoincrement())
+
+    User   User?   @relation(fields: [userId], references: [id])
+    userId String?
+
+    Game   Game? @relation(fields: [gameId], references: [id])
+    gameId Int?
+
+    Team   Team? @relation(fields: [teamId], references: [id])
+    teamId Int?
+}
+
+model Game {
+    id      Int       @id
+    season  Int       @default(2022)
+    weekNum Int
+    date    DateTime?
+    isFinal Boolean   @default(false)
+
+    home         Team?    @relation("homeGames", fields: [homeId], references: [id])
+    homeId       Int
+    homeScore    Int?
+    homeIsWinner Boolean?
+
+    away         Team?    @relation("awayGames", fields: [awayId], references: [id])
+    awayId       Int
+    awayScore    Int?
+    awayIsWinner Boolean?
+
+    votes Vote[]
+
+    @@index([homeId])
+    @@index([awayId])
+}
+
+model Team {
+    id           Int     @id
+    city         String
+    name         String
+    abbreviation String
+    displayName  String
+    logo         String?
+
+    votes     Vote[]
+    homeGames Game[] @relation("homeGames")
+    awayGames Game[] @relation("awayGames")
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -48,6 +97,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    votes         Vote[]
 }
 
 model VerificationToken {

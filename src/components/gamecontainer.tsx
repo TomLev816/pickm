@@ -1,4 +1,7 @@
 const TeamInfoContainer = () => {
+  // Game odds
+  // https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/events/401437748/competitions/401437748/odds
+
   return (
     <div className="block p-6 rounded-lg shadow-lg bg-white max-w-sm hover:bg-blue-300 w-full">
       <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">

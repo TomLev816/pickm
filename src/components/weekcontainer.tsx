@@ -3,9 +3,9 @@ import GameContainer from './gamecontainer';
 
 const WeekContainer: React.FC<{ activeWeek: number }> = ({ activeWeek }) => {
   console.log(activeWeek);
-  const { data, isLoading } = trpc.useQuery(["tom.helloTom", { text: "from tRPC" }]);
-  const getAll = trpc.useQuery(["tom.getAll"]);
-  console.log(getAll)
+  // const { data, isLoading } = trpc.useQuery(["teams.helloTeams", { text: "from tRPC" }]);
+  const { data, isLoading } = trpc.useQuery(["teams.getAllTeams"]);
+  console.log(data)
 
   if (isLoading) {
     return (
