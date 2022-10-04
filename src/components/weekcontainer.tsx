@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { trpc } from '../utils/trpc';
 import GameContainer from './gamecontainer';
+import { GameList } from '../schema/game.schema'
 
 const WeekContainer: React.FC<{ activeWeek: number }> = ({ activeWeek }) => {
-  const [gamesList, setGamesList] = useState([])
+  const [gamesList, setGamesList] = useState<GameList[]>([])
   const { isLoading } = trpc.useQuery(["games.getWeekOfGames", { activeWeekNum: activeWeek }], {
-    onSuccess(data) {
+    onSuccess(data: GameList[]) {
       setGamesList(data)
     },
   });
@@ -22,7 +23,6 @@ const WeekContainer: React.FC<{ activeWeek: number }> = ({ activeWeek }) => {
         Your Picks for Week {activeWeek}
       </div>
       {gamesList.map(game => <GameContainer gameInfo={game} />)}
-
     </div>
   )
 }
