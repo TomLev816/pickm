@@ -49,7 +49,7 @@ const GameContainer: React.FC<{ gameInfo: any }> = ({ gameInfo }) => {
           score={gameInfo.awayScore}
         />
       </div>
-      <div>Spread: {gameSpread ? gameSpread : "No Spread Yet"}</div>
+      <div>Spread: {gameSpread ? `${gameInfo.home.name} ${gameSpread} ` : "No Spread Yet"}</div>
     </div>
   )
 }
