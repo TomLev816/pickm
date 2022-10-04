@@ -22,7 +22,7 @@ const WeekContainer: React.FC<{ activeWeek: number }> = ({ activeWeek }) => {
       <div className=" pb-2 text-4xl font-bold bold-text">
         Your Picks for Week {activeWeek}
       </div>
-      {gamesList.map(game => <GameContainer gameInfo={game} />)}
+      {gamesList.map((game, i) => <GameContainer key={i} gameInfo={game} />)}
     </div>
   )
 }
