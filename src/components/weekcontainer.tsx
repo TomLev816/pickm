@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { trpc } from '../utils/trpc';
 import GameContainer from './gamecontainer';
 
 const WeekContainer: React.FC<{ activeWeek: number }> = ({ activeWeek }) => {
-  console.log(activeWeek);
-  // const { data, isLoading } = trpc.useQuery(["teams.helloTeams", { text: "from tRPC" }]);
-  const { data, isLoading } = trpc.useQuery(["teams.getAllTeams"]);
-  console.log(data)
+  const [gamesList, setGamesList] = useState([])
+  const { isLoading } = trpc.useQuery(["games.getWeekOfGames", { activeWeekNum: activeWeek }], {
+    onSuccess(data) {
+      setGamesList(data)
+    },
+  });
 
   if (isLoading) {
     return (
@@ -18,11 +21,8 @@ const WeekContainer: React.FC<{ activeWeek: number }> = ({ activeWeek }) => {
       <div className=" pb-2 text-4xl font-bold bold-text">
         Your Picks for Week {activeWeek}
       </div>
-      <GameContainer />
-      <GameContainer />
-      <GameContainer />
-      <GameContainer />
-      <GameContainer />
+      {gamesList.map(game => <GameContainer gameInfo={game} />)}
+
     </div>
   )
 }

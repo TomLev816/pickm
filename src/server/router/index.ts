@@ -3,11 +3,13 @@ import { createRouter } from "./context";
 import superjson from "superjson";
 
 import { teamRouter } from "./teams";
+import { gameRouter } from "./games";
 import { protectedExRouter } from "./protected-example-router";
 
 export const appRouter = createRouter()
   .transformer(superjson)
   .merge("teams.", teamRouter)
+  .merge("games.", gameRouter)
   .merge("auth.", protectedExRouter);
 
 // export type definition of API
