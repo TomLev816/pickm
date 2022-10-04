@@ -3,6 +3,9 @@ import { trpc } from '../utils/trpc';
 import GameContainer from './gamecontainer';
 import { GameList } from '../schema/game.schema'
 
+// Odds
+// https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/events/401437748/competitions/401437748/odds
+
 const WeekContainer: React.FC<{ activeWeek: number }> = ({ activeWeek }) => {
   const [gamesList, setGamesList] = useState<GameList[]>([])
   const { isLoading } = trpc.useQuery(["games.getWeekOfGames", { activeWeekNum: activeWeek }], {
