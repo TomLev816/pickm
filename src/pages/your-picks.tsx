@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const YourPicks: NextPage = () => {
 
-  const [week, setWeek] = useState(4);
+  const [week, setWeek] = useState(5);
   const onWeekChange = (weekNum: number) => {
     setWeek(weekNum);
   }

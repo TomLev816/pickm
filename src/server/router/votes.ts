@@ -6,23 +6,24 @@ export const voteRouter = createProtectedRouter()
   .mutation('add-vote', {
     input: z
     .object({
-      id: z.number().nullish(),
       gameId: z.number().nullable(),
       teamId: z.number().nullable(),
     }),
     async resolve({ ctx, input }) {
-      const { gameId, teamId, id } = input;
+      let { gameId, teamId } = input;
       const userId = ctx.session.user.id;
       try {
         const foundVote =
-          id &&
-          (await ctx.prisma.vote.findUnique({
+          (await ctx.prisma.vote.findFirst({
             where: {
-              id,
+              gameId,
+              userId,
             },
           }));
-
+        
+        console.log(foundVote);
         if (foundVote) {
+          const id = foundVote.id
           const updatedVote = await ctx.prisma.vote.update({
             where: {
               id,
