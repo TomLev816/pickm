@@ -10,7 +10,7 @@ export const voteRouter = createProtectedRouter()
       teamId: z.number().nullable(),
     }),
     async resolve({ ctx, input }) {
-      let { gameId, teamId } = input;
+      const { gameId, teamId } = input;
       const userId = ctx.session.user.id;
       try {
         const foundVote =
