@@ -6,7 +6,7 @@ import { trpc } from '../utils/trpc';
 
 const TeamInfoContainer: React.FC<{ handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ handleOnClick, teamInfo, isFinal, score, selectedTeamId }) => {
   return (
-    <div onClick={e => handleOnClick(teamInfo)} className={`block p-6 rounded-lg shadow-lg ${selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white"}  max-w-sm hover:bg-blue-300 w-full`}>
+    <div onClick={e => handleOnClick(teamInfo)} className={`block p-6 rounded-lg shadow-lg ${selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
       <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">
         {teamInfo.city}  {teamInfo.name}
       </h5>
