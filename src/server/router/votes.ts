@@ -71,4 +71,31 @@ export const voteRouter = createProtectedRouter()
         throw new trpc.TRPCError({ code: 'BAD_REQUEST', message: e.message });
       }
     },
+  })
+  .query('get-game-vote-count', {
+    input: z
+    .object({
+      gameId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const userId = ctx.session.user.id;
+
+      try {
+        const vote = await ctx.prisma.vote.groupBy({
+          by: ['teamId'],
+          _count: true,
+          where: {
+            gameId: input?.gameId,
+          },
+        });
+
+        if (!vote) {
+          return undefined
+        }
+        
+        return vote;
+      } catch (e: any) {
+        throw new trpc.TRPCError({ code: 'BAD_REQUEST', message: e.message });
+      }
+    },
   });

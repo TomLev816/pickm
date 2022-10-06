@@ -1,35 +1,38 @@
 import { useEffect, useState } from 'react';
 import { GameList } from '../schema/game.schema';
 import { TeamSchema } from '../schema/team.schema';
-import { VoteSchema } from '../schema/vote.schema';
 import { trpc } from '../utils/trpc';
 
-const TeamInfoContainer: React.FC<{ handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ handleOnClick, teamInfo, isFinal, score, selectedTeamId }) => {
+const TeamInfoVoteContainer: React.FC<{ teamInfo: TeamSchema, isFinal: boolean, score: number | null, voteForArray: [] }> = ({ teamInfo, isFinal, score, voteForArray }) => {
+  let votesFor = 0
+  voteForArray.map((team: { _count: number, teamId: number }) => {
+    if (team && team?.teamId === teamInfo.id) {
+      votesFor = team._count
+    }
+  })
   return (
-    <div onClick={e => handleOnClick(teamInfo)} className={`block p-6 rounded-lg shadow-lg ${selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
+    <div className={`block p-6 rounded-lg shadow-lg bg-white hover:bg-blue-300 max-w-sm  w-full`}>
       <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">
         {teamInfo.city}  {teamInfo.name}
       </h5>
       <p className="text-gray-700 text-base mb-4">
-        {isFinal ? score : null}
+        {votesFor} Votes
       </p>
     </div>
   )
 }
 
 
-const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
+const VoteGameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
   const [gameSpread, setgameSpread] = useState(0)
-  const [selectedTeamId, setselectedTeamId] = useState<number | undefined>()
+  const [voteForArray, setvoteForArray] = useState<[]>([])
 
-  const { mutate } = trpc.useMutation(['votes.add-vote'], {
-    onSuccess: (data) => console.log(data)
-  });
-  const { data } = trpc.useQuery(["votes.get-game-user-vote", { gameId: gameInfo.id }], {
-    onSuccess(data: VoteSchema) {
-      if (data) setselectedTeamId(data.teamId)
+  const { data } = trpc.useQuery(["votes.get-game-vote-count", { gameId: gameInfo.id }], {
+    onSuccess(data: any) {
+      setvoteForArray(data);
     },
   });
+
   useEffect(() => {
     const oddUrl = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/events/${gameInfo.id}/competitions/${gameInfo.id}/odds`
     fetch(oddUrl)
@@ -40,19 +43,8 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
           return
         } setgameSpread(0)
       })
-  }, [gameInfo])
+  }, [gameInfo]);
 
-
-  useEffect(() => {
-    if (selectedTeamId) {
-      mutate({ gameId: gameInfo.id, teamId: selectedTeamId });
-    }
-  }, [selectedTeamId])
-
-  const handleOnClick = (teamInfo: TeamSchema) => {
-    if (gameInfo.isFinal || teamInfo.id === selectedTeamId) return
-    setselectedTeamId(teamInfo.id)
-  }
 
   return (
     <div className="flex flex-col items-center justify-center pt-4 pb-8 mb-8 rounded-lg shadow-lg bg-purple-400 w-2/5 ">
@@ -60,20 +52,18 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
         Date: {gameInfo.date.toLocaleString()}
       </div>
       <div className="flex justify-center w-4/5">
-        <TeamInfoContainer
+        <TeamInfoVoteContainer
           teamInfo={gameInfo.home}
           isFinal={gameInfo.isFinal}
           score={gameInfo.homeScore}
-          selectedTeamId={selectedTeamId}
-          handleOnClick={handleOnClick}
+          voteForArray={voteForArray}
         />
         <div className="p-8 "></div>
-        <TeamInfoContainer
+        <TeamInfoVoteContainer
           teamInfo={gameInfo.away}
           isFinal={gameInfo.isFinal}
           score={gameInfo.awayScore}
-          selectedTeamId={selectedTeamId}
-          handleOnClick={handleOnClick}
+          voteForArray={voteForArray}
         />
       </div>
       <div>Spread: {gameSpread ? `${gameInfo.home.name} ${gameSpread > 0 ? "+" + gameSpread : gameSpread} ` : "No Spread Yet"}</div>
@@ -81,4 +71,4 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
   )
 }
 
-export default GameContainer
+export default VoteGameContainer
