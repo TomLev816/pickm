@@ -2,9 +2,8 @@ import Wrapper from '../components/wrapper';
 import { NextPage } from 'next';
 import WeekSelecter from '../components/weekselecter';
 import { useState } from 'react';
-import VoteWeekContainer from '../components/voteWeekcontainer';
 import WeekContainer from '../components/weekcontainer';
-
+import { CallerPage } from '../schema/global.schema';
 const AllPicks: NextPage = () => {
   const [week, setWeek] = useState(5);
   const onWeekChange = (weekNum: number) => {
@@ -20,7 +19,7 @@ const AllPicks: NextPage = () => {
           onWeekChange={onWeekChange}
         />
         <WeekContainer
-          callerPage='view-picks'
+          callerPage={CallerPage.ViewPicks}
           activeWeek={week}
         />
       </>

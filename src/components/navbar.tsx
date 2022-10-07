@@ -38,7 +38,7 @@ const NavBar: React.FC = () => {
               <button
                 className="flex gap-2 rounded bg-gray-200 p-4 font-bold text-gray-800 hover:bg-gray-100"
               >
-                Eveyones Picks <FaCopy size={24} />
+                View All Picks <FaCopy size={24} />
               </button>
             </Link>
             <button

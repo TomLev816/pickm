@@ -3,13 +3,24 @@ import { GameList } from '../schema/game.schema';
 import { TeamSchema } from '../schema/team.schema';
 import { VoteSchema } from '../schema/vote.schema';
 import { trpc } from '../utils/trpc';
+import { CallerPage } from '../schema/global.schema';
 
-const TeamInfoContainer: React.FC<{ isWinner: boolean, handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ handleOnClick, teamInfo, isFinal, score, selectedTeamId, isWinner }) => {
+const TeamInfoContainer: React.FC<{ voteForArray: [], callerPage: CallerPage, isWinner: boolean, handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ callerPage, handleOnClick, teamInfo, isFinal, score, selectedTeamId, isWinner, voteForArray }) => {
+  let votesFor = 0
+  voteForArray.map((team: { _count: number, teamId: number }) => {
+    if (team && team?.teamId === teamInfo.id) {
+      votesFor = team._count
+    }
+  })
+
   return (
-    <div onClick={e => handleOnClick(teamInfo)} className={`block p-6 rounded-lg shadow-lg ${selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
+    <div onClick={e => handleOnClick(teamInfo)} className={`block p-6 rounded-lg shadow-lg ${callerPage === CallerPage.MakePicks && selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
       <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">
         {teamInfo.city}  {teamInfo.name}
       </h5>
+      {callerPage === CallerPage.ViewPicks ? <p className="text-gray-700 text-base mb-4">
+        {votesFor} Votes
+      </p> : null}
       <p className="text-gray-700 text-base mb-4">
         {isFinal ? score : null}
       </p>
@@ -17,19 +28,27 @@ const TeamInfoContainer: React.FC<{ isWinner: boolean, handleOnClick: any, teamI
   )
 }
 
-
-const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
+const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = ({ gameInfo, callerPage }) => {
   const [gameSpread, setgameSpread] = useState(0)
   const [selectedTeamId, setselectedTeamId] = useState<number | undefined>()
+  const [voteForArray, setvoteForArray] = useState<[]>([])
 
-  const { mutate } = trpc.useMutation(['votes.add-vote'], {
-    onSuccess: (data) => console.log(data)
+  trpc.useQuery(["votes.get-game-vote-count", { gameId: gameInfo.id }], {
+    onSuccess(data: any) {
+      setvoteForArray(data);
+    },
   });
-  const { data } = trpc.useQuery(["votes.get-game-user-vote", { gameId: gameInfo.id }], {
+
+  trpc.useQuery(["votes.get-game-user-vote", { gameId: gameInfo.id }], {
     onSuccess(data: VoteSchema) {
       if (data) setselectedTeamId(data.teamId)
     },
   });
+
+  const { mutate } = trpc.useMutation(['votes.add-vote'], {
+    onSuccess: (data) => console.log(data)
+  });
+
   useEffect(() => {
     const oddUrl = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/events/${gameInfo.id}/competitions/${gameInfo.id}/odds`
     fetch(oddUrl)
@@ -50,7 +69,7 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
   }, [selectedTeamId])
 
   const handleOnClick = (teamInfo: TeamSchema) => {
-    if (gameInfo.isFinal || teamInfo.id === selectedTeamId) return
+    if (callerPage === CallerPage.MakePicks && gameInfo.isFinal || teamInfo.id === selectedTeamId) return
     setselectedTeamId(teamInfo.id)
   }
 
@@ -69,6 +88,8 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
           score={gameInfo.homeScore}
           selectedTeamId={selectedTeamId}
           handleOnClick={handleOnClick}
+          voteForArray={voteForArray}
+          callerPage={callerPage}
         />
         <div className="p-8 "></div>
         <TeamInfoContainer
@@ -78,6 +99,8 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
           score={gameInfo.awayScore}
           selectedTeamId={selectedTeamId}
           handleOnClick={handleOnClick}
+          voteForArray={voteForArray}
+          callerPage={callerPage}
         />
       </div>
       <div>Spread: {gameSpread ? `${gameInfo.home.name} ${gameSpread > 0 ? "+" + gameSpread : gameSpread} ` : "No Spread Yet"}</div>
