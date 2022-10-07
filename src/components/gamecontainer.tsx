@@ -4,7 +4,7 @@ import { TeamSchema } from '../schema/team.schema';
 import { VoteSchema } from '../schema/vote.schema';
 import { trpc } from '../utils/trpc';
 
-const TeamInfoContainer: React.FC<{ handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ handleOnClick, teamInfo, isFinal, score, selectedTeamId }) => {
+const TeamInfoContainer: React.FC<{ isWinner: boolean, handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ handleOnClick, teamInfo, isFinal, score, selectedTeamId, isWinner }) => {
   return (
     <div onClick={e => handleOnClick(teamInfo)} className={`block p-6 rounded-lg shadow-lg ${selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
       <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">
@@ -54,6 +54,8 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
     setselectedTeamId(teamInfo.id)
   }
 
+  console.log(gameInfo);
+
   return (
     <div className="flex flex-col items-center justify-center pt-4 pb-8 mb-8 rounded-lg shadow-lg bg-purple-400 w-2/5 ">
       <div >
@@ -63,6 +65,7 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
         <TeamInfoContainer
           teamInfo={gameInfo.home}
           isFinal={gameInfo.isFinal}
+          isWinner={gameInfo.homeIsWinner ? true : false}
           score={gameInfo.homeScore}
           selectedTeamId={selectedTeamId}
           handleOnClick={handleOnClick}
@@ -71,6 +74,7 @@ const GameContainer: React.FC<{ gameInfo: GameList }> = ({ gameInfo }) => {
         <TeamInfoContainer
           teamInfo={gameInfo.away}
           isFinal={gameInfo.isFinal}
+          isWinner={gameInfo.awayIsWinner ? true : false}
           score={gameInfo.awayScore}
           selectedTeamId={selectedTeamId}
           handleOnClick={handleOnClick}

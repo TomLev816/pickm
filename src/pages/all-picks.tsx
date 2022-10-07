@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import WeekSelecter from '../components/weekselecter';
 import { useState } from 'react';
 import VoteWeekContainer from '../components/voteWeekcontainer';
+import WeekContainer from '../components/weekcontainer';
 
 const AllPicks: NextPage = () => {
   const [week, setWeek] = useState(5);
@@ -18,7 +19,8 @@ const AllPicks: NextPage = () => {
           activeWeek={week}
           onWeekChange={onWeekChange}
         />
-        <VoteWeekContainer
+        <WeekContainer
+          callerPage='view-picks'
           activeWeek={week}
         />
       </>

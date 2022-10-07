@@ -20,6 +20,7 @@ const YourPicks: NextPage = () => {
           onWeekChange={onWeekChange}
         />
         <WeekContainer
+          callerPage='your-picks'
           activeWeek={week}
         />
       </>
