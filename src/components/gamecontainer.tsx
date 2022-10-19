@@ -67,11 +67,12 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
   }, [selectedTeamId])
 
   const handleOnClick = (teamInfoId: number) => {
-    if (callerPage === CallerPage.ViewPicks || gameInfo.isFinal || teamInfoId === selectedTeamId) return
+    const isAfterGame = gameInfo.date && new Date() > gameInfo.date;
+
+    if (isAfterGame || callerPage === CallerPage.ViewPicks || gameInfo.isFinal || teamInfoId === selectedTeamId) return
     setselectedTeamId(teamInfoId)
   }
 
-  // console.log(gameInfo);
 
   return (
     <div className="flex flex-col items-center justify-center pt-4 pb-8 mb-8 rounded-lg shadow-lg bg-purple-400 w-2/5 ">
