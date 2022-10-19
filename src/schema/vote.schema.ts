@@ -1,4 +1,5 @@
 import z from 'zod';
+import { UserSchema } from './user.schema';
 
 export const voteSchema = z.object({
   id: z.number(),
@@ -7,4 +8,6 @@ export const voteSchema = z.object({
   teamId: z.number(),
 });
 
-export type VoteSchema = z.TypeOf<typeof voteSchema>;
+export type VoteSchema = z.TypeOf<typeof voteSchema> & {
+  User: UserSchema;
+};
