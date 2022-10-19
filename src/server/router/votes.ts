@@ -6,8 +6,8 @@ export const voteRouter = createProtectedRouter()
   .mutation('add-vote', {
     input: z
     .object({
-      gameId: z.number().nullable(),
-      teamId: z.number().nullable(),
+      gameId: z.number(),
+      teamId: z.number(),
     }),
     async resolve({ ctx, input }) {
       const { gameId, teamId } = input;
