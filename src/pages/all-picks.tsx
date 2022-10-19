@@ -4,6 +4,7 @@ import WeekSelecter from '../components/weekselecter';
 import { useState } from 'react';
 import WeekContainer from '../components/weekcontainer';
 import { CallerPage } from '../schema/global.schema';
+
 const AllPicks: NextPage = () => {
   const [week, setWeek] = useState(5);
   const onWeekChange = (weekNum: number) => {

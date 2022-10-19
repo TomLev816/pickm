@@ -6,7 +6,7 @@ export const teamSchema = z.object({
   city: z.string(),
   displayName: z.string(),
   id: z.number(),
-  logo: z.string(),
+  logo: z.string().nullable(),
   name: z.string(),
 
 });

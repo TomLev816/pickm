@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { GameList } from '../schema/game.schema';
 import { TeamSchema } from '../schema/team.schema';
 import { VoteSchema } from '../schema/vote.schema';
-import { trpc } from '../utils/trpc';
 import { CallerPage } from '../schema/global.schema';
+import { trpc } from '../utils/trpc';
 
 const TeamInfoContainer: React.FC<{ voteForArray: [], callerPage: CallerPage, isWinner: boolean, handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ callerPage, handleOnClick, teamInfo, isFinal, score, selectedTeamId, isWinner, voteForArray }) => {
   let votesFor = 0
@@ -14,16 +14,16 @@ const TeamInfoContainer: React.FC<{ voteForArray: [], callerPage: CallerPage, is
   })
 
   return (
-    <div onClick={e => handleOnClick(teamInfo)} className={`block p-6 rounded-lg shadow-lg ${callerPage === CallerPage.MakePicks && selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
+    <div onClick={e => handleOnClick(teamInfo.id)} className={`block p-6 rounded-lg shadow-lg ${callerPage === CallerPage.MakePicks && selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
       <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">
         {teamInfo.city}  {teamInfo.name}
       </h5>
-      {callerPage === CallerPage.ViewPicks ? <p className="text-gray-700 text-base mb-4">
-        {votesFor} Votes
-      </p> : null}
       <p className="text-gray-700 text-base mb-4">
         {isFinal ? score : null}
       </p>
+      {callerPage === CallerPage.ViewPicks ? <p className="text-gray-700 text-base mb-4">
+        {votesFor} Votes
+      </p> : null}
     </div>
   )
 }
@@ -45,9 +45,7 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
     },
   });
 
-  const { mutate } = trpc.useMutation(['votes.add-vote'], {
-    onSuccess: (data) => console.log(data)
-  });
+  const { mutate } = trpc.useMutation(['votes.add-vote']);
 
   useEffect(() => {
     const oddUrl = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/events/${gameInfo.id}/competitions/${gameInfo.id}/odds`
@@ -68,17 +66,17 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
     }
   }, [selectedTeamId])
 
-  const handleOnClick = (teamInfo: TeamSchema) => {
-    if (callerPage === CallerPage.MakePicks && gameInfo.isFinal || teamInfo.id === selectedTeamId) return
-    setselectedTeamId(teamInfo.id)
+  const handleOnClick = (teamInfoId: number) => {
+    if (callerPage === CallerPage.ViewPicks || gameInfo.isFinal || teamInfoId === selectedTeamId) return
+    setselectedTeamId(teamInfoId)
   }
 
-  console.log(gameInfo);
+  // console.log(gameInfo);
 
   return (
     <div className="flex flex-col items-center justify-center pt-4 pb-8 mb-8 rounded-lg shadow-lg bg-purple-400 w-2/5 ">
       <div >
-        Date: {gameInfo.date.toLocaleString()}
+        Date: {gameInfo.date?.toLocaleString()}
       </div>
       <div className="flex justify-center w-4/5">
         <TeamInfoContainer

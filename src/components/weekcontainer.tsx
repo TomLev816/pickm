@@ -32,26 +32,31 @@ const ViewVotesContainer: React.FC<{ gamesList: GameList[], activeWeek: number, 
 
 
 const WeekContainer: React.FC<{ activeWeek: number, callerPage: CallerPage }> = ({ activeWeek, callerPage }) => {
-  const [gamesList, setGamesList] = useState<GameList[]>([])
-  const { isLoading } = trpc.useQuery(["games.getWeekOfGames", { activeWeekNum: activeWeek }], {
+  const { data, isSuccess, error, isLoading } = trpc.useQuery(["games.getWeekOfGames", { activeWeekNum: activeWeek }], {
     onSuccess(data: GameList[]) {
-      setGamesList(data)
-    },
+      console.log(data);
+    }
   });
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return (
       <div>LOADING....</div>
     )
   }
 
+  if (isSuccess) {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        {callerPage === CallerPage.MakePicks ?
+          <MakePickContainer gamesList={data} activeWeek={activeWeek} callerPage={callerPage} /> :
+          <ViewVotesContainer gamesList={data} activeWeek={activeWeek} callerPage={callerPage} />
+        }
+      </div>
+    )
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      {callerPage === CallerPage.MakePicks ?
-        <MakePickContainer gamesList={gamesList} activeWeek={activeWeek} callerPage={callerPage} /> :
-        <ViewVotesContainer gamesList={gamesList} activeWeek={activeWeek} callerPage={callerPage} />
-      }
-    </div>
+    <div>Error</div>
   )
 }
 
