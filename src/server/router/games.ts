@@ -34,9 +34,15 @@ export const gameRouter = createRouter()
   input: z
   .object({
     gameId: z.number(),
+    isFinal : z.boolean(),
+    homeIsWinner: z.boolean(),
+    homeScore: z.number(),
+    awayIsWinner: z.boolean(),
+    awayScore: z.number(),
   }),
   async resolve({ ctx, input }) {
-    const { gameId } = input;
+    console.log('IN FINALIZE');
+      const { gameId, isFinal, homeIsWinner, homeScore, awayIsWinner, awayScore } = input;
     try {
       const foundGame =
         (await ctx.prisma.game.findUnique({
@@ -45,19 +51,20 @@ export const gameRouter = createRouter()
           },
         }));
       
-      console.log(foundGame);
       if (foundGame) {
         const id = foundGame.id
-        const updatedGame = foundGame
-        // const updatedGame = await ctx.prisma.vote.update({
-        //   where: {
-        //     id,
-        //   },
-        //   data: {
-        //     gameId, 
-        //     teamId,
-        //   },
-        // });
+        const updatedGame = await ctx.prisma.game.update({
+          where: {
+            id,
+          },
+          data: {
+            isFinal,
+            homeIsWinner,
+            homeScore,
+            awayIsWinner,
+            awayScore,
+          },
+        });
         return updatedGame;
       }
     } catch (e: any) {

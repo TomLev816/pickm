@@ -59,18 +59,15 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
       })
   }, [gameInfo])
 
-
-  useEffect(() => {
-    if (selectedTeamId) {
-      mutate({ gameId: gameInfo.id, teamId: selectedTeamId });
-    }
-  }, [selectedTeamId])
-
   const handleOnClick = (teamInfoId: number) => {
     const isAfterGame = gameInfo.date && new Date() > gameInfo.date;
 
+    // Dont allow change in pick after game started
     if (isAfterGame || callerPage === CallerPage.ViewPicks || gameInfo.isFinal || teamInfoId === selectedTeamId) return
+
     setselectedTeamId(teamInfoId)
+    mutate({ gameId: gameInfo.id, teamId: teamInfoId });
+    // TODO: unSetSelected team if mutate fails
   }
 
 
