@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 const WeekSelecterCard: React.FC<{
   weekName: string,
   weekNum: number,

@@ -1,4 +1,4 @@
-import z, { Schema } from 'zod';
+import z from 'zod';
 import {TeamSchema} from '../schema/team.schema'
 
 export const gameListSchema = z.object({

@@ -38,7 +38,7 @@ const WeekContainer: React.FC<{ activeWeek: number, callerPage: CallerPage }> = 
 
   const { data, isSuccess, error, isLoading } = trpc.useQuery(["games.getWeekOfGames", { activeWeekNum: activeWeek }], {
     onSuccess(data: GameList[]) {
-      let mnf = data.at(-1)
+      const mnf = data.at(-1)
       if (mnf?.date && new Date() > mnf.date && !mnf?.isFinal) {
         setgetNewGameData(true);
       } else {
@@ -49,7 +49,7 @@ const WeekContainer: React.FC<{ activeWeek: number, callerPage: CallerPage }> = 
 
   useEffect(() => {
     if (getNewGameData) {
-      let weekUrl = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?week=${activeWeek}`
+      const weekUrl = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?week=${activeWeek}`
       fetch(weekUrl)
         .then(res => res.json())
         .then(data => {
