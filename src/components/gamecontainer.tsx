@@ -5,25 +5,38 @@ import { VoteSchema } from '../schema/vote.schema';
 import { CallerPage } from '../schema/global.schema';
 import { trpc } from '../utils/trpc';
 
+const ShowVotesFor: React.FC<{ votesForTeam: VoteSchema[] }> = ({ votesForTeam }) => {
+  return (
+    <div className="text-gray-700">
+      <h3>{votesForTeam.length} Votes</h3>
+      {votesForTeam.map((vote: VoteSchema) => (
+        <li>{vote.User.name}</li>
+      ))}
+    </div>
+  )
+}
+
 const TeamInfoContainer: React.FC<{ voteForArray: [], callerPage: CallerPage, isWinner: boolean, handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ callerPage, handleOnClick, teamInfo, isFinal, score, selectedTeamId, isWinner, voteForArray }) => {
-  let votesFor = 0
-  voteForArray.map((team: { _count: number, teamId: number }) => {
-    if (team && team?.teamId === teamInfo.id) {
-      votesFor = team._count
-    }
-  })
+  const checkVotedFor = (vote: VoteSchema) => {
+    return vote.teamId === teamInfo.id;
+  }
+
+  console.log('voteForArray', voteForArray);
+  const votesForTeam = voteForArray?.filter(checkVotedFor)
+  console.log('votesForTeam', votesForTeam);
+
 
   return (
     <div onClick={e => handleOnClick(teamInfo.id)} className={`block p-6 rounded-lg shadow-lg ${callerPage === CallerPage.MakePicks && selectedTeamId && selectedTeamId === teamInfo.id ? "bg-green-600" : "bg-white hover:bg-blue-300"}  max-w-sm  w-full`}>
       <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">
         {teamInfo.city}  {teamInfo.name}
       </h5>
-      <p className="text-gray-700 text-base mb-4">
+      <div className="text-gray-700 text-base mb-4">
         {isFinal ? score : null}
-      </p>
-      {callerPage === CallerPage.ViewPicks ? <p className="text-gray-700 text-base mb-4">
-        {votesFor} Votes
-      </p> : null}
+      </div>
+      {callerPage === CallerPage.ViewPicks ?
+        <ShowVotesFor votesForTeam={votesForTeam} />
+        : null}
     </div>
   )
 }
@@ -33,8 +46,8 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
   const [selectedTeamId, setselectedTeamId] = useState<number | undefined>()
   const [voteForArray, setvoteForArray] = useState<[]>([])
 
-  trpc.useQuery(["votes.get-game-vote-count", { gameId: gameInfo.id }], {
-    onSuccess(data: any) {
+  trpc.useQuery(["votes.get-game-vote-list", { gameId: gameInfo.id }], {
+    onSuccess(data: []) {
       setvoteForArray(data);
     },
   });

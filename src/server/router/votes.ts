@@ -98,4 +98,28 @@ export const voteRouter = createProtectedRouter()
         throw new trpc.TRPCError({ code: 'BAD_REQUEST', message: e.message });
       }
     },
+  })
+  .query('get-game-vote-list', {
+    input: z
+    .object({
+      gameId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const userId = ctx.session.user.id;
+
+      try {
+        const votes = await ctx.prisma.vote.findMany({
+          where: {
+            gameId: input?.gameId,
+          },
+          include: {
+            User: true, 
+          },
+        });
+        
+        return votes;
+      } catch (e: any) {
+        throw new trpc.TRPCError({ code: 'BAD_REQUEST', message: e.message });
+      }
+    },
   });
