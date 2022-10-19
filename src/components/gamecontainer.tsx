@@ -10,7 +10,7 @@ const ShowVotesFor: React.FC<{ votesForTeam: VoteSchema[] }> = ({ votesForTeam }
     <div className="text-gray-700">
       <h3>{votesForTeam.length} Votes</h3>
       {votesForTeam.map((vote: VoteSchema) => (
-        <li>{vote.User.name}</li>
+        <li key={vote.User.id}>{vote.User.name}</li>
       ))}
     </div>
   )
