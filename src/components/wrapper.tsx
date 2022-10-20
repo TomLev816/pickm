@@ -21,7 +21,7 @@ const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
     return (
       <>
         <WrapperHeader />
-        <div className="relative flex min-h-screen  bg-red-400 flex-col justify-between">
+        <div className="relative flex min-h-screen  bg-pagebg flex-col justify-between">
           <div className="flex min-h-0 flex-1 flex-col">
             <NavBar />
             <PleaseLogin />
@@ -33,7 +33,7 @@ const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <>
       <WrapperHeader />
-      <div className="relative flex min-h-screen bg-red-400 flex-col justify-between">
+      <div className="relative flex min-h-screen bg-pagebg flex-col justify-between">
         <div className="flex min-h-0 flex-1 flex-col">
           <NavBar />
           {children}
