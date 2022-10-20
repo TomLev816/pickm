@@ -39,8 +39,10 @@ const ShowTeamScore: React.FC<{ gameSpread: number, isHome: boolean, score: numb
 }
 
 const TeamInfoContainer: React.FC<{ hasMoreVotes: boolean, gameSpread: number, voteForArray: VoteSchema[], callerPage: CallerPage, isHome: boolean, handleOnClick: any, teamInfo: TeamSchema, isFinal: boolean, score: number | null, selectedTeamId: number | undefined }> = ({ gameSpread, callerPage, handleOnClick, teamInfo, isFinal, score, selectedTeamId, isHome, voteForArray, hasMoreVotes }) => {
+  const isSelectedTeam = (selectedTeamId && selectedTeamId === teamInfo.id);
+
   return (
-    <div onClick={e => handleOnClick(teamInfo.id)} className={`block p-6 rounded-lg shadow-lg ${callerPage === CallerPage.ViewPicks ? hasMoreVotes ? "bg-selectedTeamInfo" : "bg-teamInfo" : callerPage === CallerPage.MakePicks && selectedTeamId && selectedTeamId === teamInfo.id ? "bg-selectedTeamInfo" : "bg-teamInfo hover:bg-hoverButtons"}  max-w-sm  w-full`}>
+    <div onClick={e => handleOnClick(teamInfo.id)} className={`block p-6 rounded-lg shadow-lg ${callerPage === CallerPage.ViewPicks ? hasMoreVotes ? "bg-selectedTeamInfo" : "bg-teamInfo" : callerPage === CallerPage.MakePicks && isSelectedTeam ? "bg-selectedTeamInfo" : "bg-teamInfo hover:bg-hoverButtons"}  max-w-sm  w-full`}>
       <h5 className="text-xl leading-tight font-medium mb-2">
         {teamInfo.city}  {teamInfo.name}
       </h5>
@@ -61,10 +63,8 @@ const TeamInfoContainer: React.FC<{ hasMoreVotes: boolean, gameSpread: number, v
 
 const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = ({ gameInfo, callerPage }) => {
   const [gameSpread, setgameSpread] = useState(0)
-  const [pickedWinner, setpickedWinner] = useState<boolean>(false)
   const [selectedTeamId, setselectedTeamId] = useState<number | undefined>()
   const [voteForArray, setvoteForArray] = useState<[]>([])
-
 
   trpc.useQuery(["votes.get-game-vote-list", { gameId: gameInfo.id }], {
     onSuccess(data: []) {
@@ -75,37 +75,8 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
   trpc.useQuery(["votes.get-game-user-vote", { gameId: gameInfo.id }], {
     onSuccess(data: VoteSchema) {
       setselectedTeamId(data?.teamId)
-      checkIfPickedWinner(data?.teamId, gameInfo)
     },
   });
-
-  const votesForHomeTeam: VoteSchema[] = voteForArray.filter((vote: VoteSchema) => vote.teamId === gameInfo.home.id)
-  const votesForAwayTeam: VoteSchema[] = voteForArray.filter((vote: VoteSchema) => vote.teamId === gameInfo.away.id)
-  const homeTeamMoreVotes = votesForHomeTeam.length > votesForAwayTeam.length
-  const awayTeamMoreVotes = votesForHomeTeam.length < votesForAwayTeam.length
-
-  const getWinnerId = (awayScore: number, homeScore: number) => {
-    if (awayScore > homeScore + gameSpread) {
-      return gameInfo.away.id
-    }
-    return gameInfo.home.id
-  }
-
-  const checkIfPickedWinner = (teamId: number, gameInfo: GameList) => {
-    if (teamId && gameInfo.isFinal && gameInfo.awayScore && gameInfo.homeScore) {
-      if (callerPage === CallerPage.MakePicks) {
-        setpickedWinner(teamId === getWinnerId(gameInfo.awayScore, gameInfo.homeScore))
-      } else if (callerPage === CallerPage.ViewPicks) {
-        if (homeTeamMoreVotes) {
-          setpickedWinner(gameInfo.home.id === getWinnerId(gameInfo.awayScore, gameInfo.homeScore))
-        } else if (awayTeamMoreVotes) {
-          setpickedWinner(gameInfo.away.id === getWinnerId(gameInfo.awayScore, gameInfo.homeScore))
-        }
-
-      }
-    }
-  }
-
   const { mutate } = trpc.useMutation(['votes.add-vote']);
 
   useEffect(() => {
@@ -121,9 +92,8 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
   }, [gameInfo])
 
   const handleOnClick = (teamInfoId: number) => {
-    const isAfterGame = gameInfo.date && new Date() > gameInfo.date;
-
     // Dont allow change in pick after game started
+    const isAfterGame = gameInfo.date && new Date() > gameInfo.date;
     if (isAfterGame || callerPage === CallerPage.ViewPicks || gameInfo.isFinal || teamInfoId === selectedTeamId) return
 
     setselectedTeamId(teamInfoId)
@@ -131,26 +101,39 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
     // TODO: unSetSelected team if mutate fails
   }
 
+  const votesForHomeTeam: VoteSchema[] = voteForArray.filter((vote: VoteSchema) => vote.teamId === gameInfo.home.id)
+  const votesForAwayTeam: VoteSchema[] = voteForArray.filter((vote: VoteSchema) => vote.teamId === gameInfo.away.id)
+  const homeTeamMoreVotes = votesForHomeTeam.length > votesForAwayTeam.length
+  const awayTeamMoreVotes = votesForHomeTeam.length < votesForAwayTeam.length
+
+  const getWinnerId = (awayScore: number, homeScore: number) => {
+    if (awayScore > homeScore + gameSpread) {
+      return gameInfo.away.id
+    }
+    return gameInfo.home.id
+  }
+
+  const pickedWinner = () => {
+    if (selectedTeamId && gameInfo.isFinal && gameInfo.awayScore && gameInfo.homeScore) {
+      if (callerPage === CallerPage.MakePicks) {
+        return selectedTeamId === getWinnerId(gameInfo.awayScore, gameInfo.homeScore)
+      } else if (callerPage === CallerPage.ViewPicks) {
+        if (homeTeamMoreVotes) {
+          return gameInfo.home.id === getWinnerId(gameInfo.awayScore, gameInfo.homeScore)
+        } else if (awayTeamMoreVotes) {
+          return gameInfo.away.id === getWinnerId(gameInfo.awayScore, gameInfo.homeScore)
+        }
+      }
+    }
+  }
+
 
   return (
-    <div className={`flex flex-col items-center justify-center pt-4 pb-8 mb-8 rounded-lg shadow-lg w-2/5 ${gameInfo.isFinal ? pickedWinner ? "bg-winnerTeamInfo" : "bg-loserTeamInfo" : "bg-gameBg"}  `}>
+    <div className={`flex flex-col items-center justify-center pt-4 pb-8 mb-8 rounded-lg shadow-lg w-2/5 ${gameInfo.isFinal ? pickedWinner() ? "bg-winnerTeamInfo" : "bg-loserTeamInfo" : "bg-gameBg"}  `}>
       <div >
         Date: {gameInfo.date?.toLocaleString()}
       </div>
       <div className="flex justify-center w-4/5">
-        <TeamInfoContainer
-          teamInfo={gameInfo.home}
-          gameSpread={gameSpread}
-          isFinal={gameInfo.isFinal}
-          isHome={true}
-          score={gameInfo.homeScore}
-          selectedTeamId={selectedTeamId}
-          handleOnClick={handleOnClick}
-          voteForArray={votesForHomeTeam}
-          hasMoreVotes={homeTeamMoreVotes}
-          callerPage={callerPage}
-        />
-        <div className="p-8 "></div>
         <TeamInfoContainer
           teamInfo={gameInfo.away}
           gameSpread={gameSpread}
@@ -161,6 +144,19 @@ const GameContainer: React.FC<{ gameInfo: GameList, callerPage: CallerPage }> = 
           handleOnClick={handleOnClick}
           voteForArray={votesForAwayTeam}
           hasMoreVotes={awayTeamMoreVotes}
+          callerPage={callerPage}
+        />
+        <div className="p-8 "> AT</div>
+        <TeamInfoContainer
+          teamInfo={gameInfo.home}
+          gameSpread={gameSpread}
+          isFinal={gameInfo.isFinal}
+          isHome={true}
+          score={gameInfo.homeScore}
+          selectedTeamId={selectedTeamId}
+          handleOnClick={handleOnClick}
+          voteForArray={votesForHomeTeam}
+          hasMoreVotes={homeTeamMoreVotes}
           callerPage={callerPage}
         />
       </div>
