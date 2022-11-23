@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { CallerPage } from '../schema/global.schema';
 
 const YourPicks: NextPage = () => {
-  const [week, setWeek] = useState(11);
+  const [week, setWeek] = useState(12);
   const onWeekChange = (weekNum: number) => {
     setWeek(weekNum);
   }
